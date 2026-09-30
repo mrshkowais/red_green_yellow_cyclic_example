@@ -1,0 +1,43 @@
+// Code your testbench here
+`timescale 1ns / 1ps
+
+module rgy_cyclic_tb;
+
+  reg clk;
+  reg areset;
+  wire LEDR, LEDG, LEDY;
+
+  rgy_cyclic uut (
+    .clk(clk),
+    .areset(areset),
+    .LEDR(LEDR),
+    .LEDG(LEDG),
+    .LEDY(LEDY)
+  );
+
+  always begin
+    #5 clk = ~clk;
+  end
+
+  initial begin
+   
+    clk = 0;
+    areset = 0;
+
+    $display("Applying reset");
+    #2 areset = 1;  
+    #10 areset = 0; 
+    $display("Reset released. Starting state cycling...");
+
+    #100;
+
+    $display("Simulation complete.");
+    $finish;
+  end
+
+  initial begin
+    $monitor("Time=%0dns | areset=%b | RED=%b | GREEN=%b | YELLOW=%b", 
+             $time, areset, LEDR, LEDG, LEDY);
+  end
+
+endmodule
